@@ -30,33 +30,35 @@ set autoquit true
 cmd open ${{
     case $(file --mime-type "$(readlink -f $f)" -b) in
 	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
-	image/vnd.djvu|application/pdf|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 ;;
+	image/vnd.djvu|application/pdf|application/postscript|application/cbz) setsid -f zathura $fx >/dev/null 2>&1 ;;
         text/*|application/json|inode/x-empty|application/x-subrip) $EDITOR $fx;;
 	image/x-xcf) setsid -f gimp $f >/dev/null 2>&1 ;;
 	image/svg+xml) display -- $f ;;
 	image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|avif\|tif\|ico\)\(_large\)*$" |
-		setsid -f nsxiv -aio 2>/dev/null | while read -r file; do
+		setsid -f nsxiv -abio 2>/dev/null | while read -r file; do
 			[ -z "$file" ] && continue
 			lf -remote "send select \"$file\""
 			lf -remote "send toggle"
 		done &
 		;;
-	audio/*|video/x-ms-asf) mpv --audio-display=no $f ;;
-	video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
+	audio/*|video/x-ms-asf) mpv --audio-display=no $fx ;;
+	video/*) setsid -f mpv $fx -quiet >/dev/null 2>&1 ;;
 	application/pdf|application/vnd.djvu|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
 	application/pgp-encrypted) $EDITOR $fx ;;
 	application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|application/vnd.oasis.opendocument.spreadsheet|application/vnd.oasis.opendocument.spreadsheet-template|application/vnd.openxmlformats-officedocument.presentationml.presentation|application/vnd.oasis.opendocument.presentation-template|application/vnd.oasis.opendocument.presentation|application/vnd.ms-powerpoint|application/vnd.oasis.opendocument.graphics|application/vnd.oasis.opendocument.graphics-template|application/vnd.oasis.opendocument.formula|application/vnd.oasis.opendocument.database) setsid -f libreoffice $fx >/dev/null 2>&1 ;;
         application/octet-stream) case ${f##*.} in
 			doc|docx|xls|xlsx|odt|ppt|pptx) setsid -f libreoffice $fx >/dev/null 2>&1 ;;
 			ghw) setsid -f gtkwave $f >/dev/null 2>&1 ;;
-			ts) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
+			ts) setsid -f mpv $fx -quiet >/dev/null 2>&1 ;;
 			*) setsid -f zathura $fx >/dev/null 2>&1 ;;
 	   	esac ;;
 	*) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
     esac
 }}
 
-cmd mkdir $mkdir -p "$@"
+#cmd mkdir $mkdir -p "$@"
+cmd mkdir %IFS=" "; mkdir -p -- "$*"
+cmd touch %IFS=" "; touch "$*"
 
 cmd extract ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
@@ -93,8 +95,7 @@ cmd delete ${{
 
 cmd moveto ${{
 	set -f
-	clear; tput cup $(($(tput lines)/3))
-	dest=$(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" | fzf --layout=reverse --height 40% --prompt 'Move to where? ' | sed 's|~|$HOME|')
+	dest=$(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" | fzf --prompt 'Move to where? ' | sed 's|~|$HOME|')
 	[ -z "$dest" ] && exit
 	destpath=$(eval printf '%s' \"$dest\")
 	clear; tput cup $(($(tput lines)/3)); tput bold
@@ -111,8 +112,7 @@ cmd moveto ${{
 
 cmd copyto ${{
 	set -f
-	clear; tput cup $(($(tput lines)/3))
-	dest=$(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" | fzf --layout=reverse --height 40% --prompt 'Copy to where? ' | sed 's|~|$HOME|')
+	dest=$(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" | fzf --prompt 'Copy to where? ' | sed 's|~|$HOME|')
 	[ -z "$dest" ] && exit
 	destpath=$(eval printf '%s' \"$dest\")
 	clear; tput cup $(($(tput lines)/3)); tput bold
@@ -150,15 +150,30 @@ cmd bulkrename ${{
     lf -remote "send $id unselect"
 }}
 
+cmd shortcutjump ${{
+	set -f
+	clear; tput cup $(($(tput lines)/3))
+	tmp="$(mktemp)" && trap 'rm "$tmp"' EXIT || exit
+	sed 's/\s*#.*//; /^$/d' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" > "$tmp"
+	choice=$(cat "$tmp" | fzf --layout=reverse --height 40% --listen --no-ignore-case --tiebreak=begin,chunk -n1 \
+		 --bind result:transform:"grep -q '^{q}\s' \"$tmp\" && [ \$(grep '^{q}\S*\s' \"$tmp\" | wc -l) -eq 1 ] && echo accept" | \
+		 sed 's/\S\+\s\+//')
+	[ -z "$choice" ] && exit
+	path=$(eval printf '%s' \"$choice\")
+	lf -remote "send $id cd $path"
+}}
+
+
 # Bindings
 map <c-f> $lf -remote "send $id select \"$(fzf)\""
-map J $lf -remote "send $id cd $(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' ${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs | fzf)"
+map J shortcutjump
 map H cd ~
 map g top
 map D delete
-map E extract
-map C copyto
+map Ee extract
+map Cy copyto
 map M moveto
+map Cx clear
 map <c-n> push :mkdir<space>""<left>
 map <c-r> reload
 map <c-s> set hidden!
@@ -186,7 +201,7 @@ map U $printf "%s" "$fx" | xclip -selection clipboard
 map u $printf "%s" "$fx" | sed 's/.*\///' | xclip -selection clipboard
 map . $printf "%s" "$fx" | sed -E 's/^.+\[/https:\/\/www.youtube.com\/watch?v=/' | sed -E 's/\]\..+//' | xclip -selection clipboard
 map <gt> $printf "%s" "$fx" | sed -E 's/^.+\[/https:\/\/piped.video\/watch?v=/' | sed -E 's/\]\..+//' | xclip -selection clipboard
-map T $nsxiv -t "$(pwd)" # opens thumbnail mode
+map T $nsxiv -abt "$(pwd)" # opens thumbnail mode
 map <c-l> unselect
 
 

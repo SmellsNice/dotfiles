@@ -19,10 +19,12 @@ Plug 'vimwiki/vimwiki'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-commentary'
 Plug 'ap/vim-css-color'
+Plug 'ellisonleao/gruvbox.nvim'
+Plug 'vim-airline/vim-airline-themes'
 call plug#end()
 
 set title
-set bg=light
+set bg=dark
 set go=a
 set mouse=a
 set nohlsearch
@@ -31,7 +33,8 @@ set noshowmode
 set noruler
 set laststatus=0
 set noshowcmd
-colorscheme vim
+colorscheme gruvbox
+hi Normal guibg=NONE ctermbg=NONE
 
 " Some basics:
 	nnoremap c "_c
@@ -63,8 +66,9 @@ colorscheme vim
 	endif
 	let g:airline_symbols.colnr = ' C:'
 	let g:airline_symbols.linenr = ' L:'
-	let g:airline_symbols.maxlinenr = ' '
-	let g:airline#extensions#whitespace#symbol = '!'
+	let g:airline_symbols.maxlinenr = '! '
+	let g:airline#extensions#whitespace#symbol = '! '
+	let g:airline_theme='base16_gruvbox_dark_hard'
 
 " Shortcutting split navigation, saving a keypress:
 	map <C-h> <C-w>h

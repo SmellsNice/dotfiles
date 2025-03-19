@@ -404,9 +404,10 @@
 
 def_key "+"
     show_clock
-def_key "="
-    volume_up
 
+#def_key "="
+#    volume_up
+#
 def_key "j"
     scroll_down
 def_key "k"
@@ -429,9 +430,9 @@ def_key "h"
 def_key "l"
     next_column
 
-def_key "."
-    show_lyrics
-
+#def_key "."
+#    show_lyrics
+#
 def_key "n"
     next_found_item
 def_key "N"
@@ -477,3 +478,15 @@ def_key "x"
   delete_playlist_items
 def_key "P"
   show_playlist
+
+def_key "."
+  next
+
+def_key ","
+  previous
+
+def_key ">"
+  seek_forward
+
+def_key "<"
+  seek_backward

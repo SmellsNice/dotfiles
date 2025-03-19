@@ -1,0 +1,12 @@
+#!/bin/bash
+
+VPN_INTERFACE_NAME="${1:?Error: an interface name must be provided as the first argument}"
+
+connections=$(ip a | grep "$VPN_INTERFACE_NAME" | grep -c inet)
+if [[ $connections -eq 1 ]]; then
+	# echo "VPN: On"
+	echo "🔒"
+else
+	# echo "VPN: Off"
+	echo ""
+fi

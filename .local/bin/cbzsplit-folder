@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for file in "$1"/*.cbz
+do
+    cbzsplit "$file"
+done
