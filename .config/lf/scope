@@ -52,10 +52,18 @@ image/svg+xml)
 		;;
 	*/epub+zip|*/mobi*)
 		CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)"
-		[ ! -f "$CACHE.jpg" ] && gnome-epub-thumbnailer "$1" "$CACHE.jpg"
+		[ ! -f "$CACHE.jpg" ] && gnome-epub-thumbnailer -s 0 "$1" "$CACHE.jpg"
 		image "$CACHE.jpg" "$2" "$3" "$4" "$5" "$1"
 		;;
-	application/*zip) atool --list -- "$1" ;;
+	application/*zip)
+	    	if [[ "$1" =~ \.cbz$ || "$1" =~ \.cbr$ ]]; then
+       			 CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1).jpg"
+      			[ ! -f "$CACHE" ] && comicthumb "$1" "$CACHE" 0
+    			image "$CACHE" "$2" "$3" "$4" "$5" "$1"
+		else
+        		atool --list -- "$1"
+	  	fi
+		;;
 	*opendocument*) odt2txt "$1" ;;
 	application/pgp-encrypted) gpg -d -- "$1" ;;
 esac
