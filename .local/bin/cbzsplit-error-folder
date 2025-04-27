@@ -1,6 +1,0 @@
-#!/bin/bash
-
-for file in "$1"/*.cbz
-do
-    cbzsplit-error "$file"
-done
