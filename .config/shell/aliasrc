@@ -31,8 +31,8 @@ alias \
 	ytt="yt --skip-download --write-thumbnail" \
 	ffmpeg="ffmpeg -hide_banner" \
 	astronvim="NVIM_APPNAME=astronvim nvim" \
-	nsxiv="nsxiv -b" \
-	sxiv="nsxiv -b"
+	nsxiv="nsxiv -ab" \
+	sxiv="nsxiv -ab"
 
 # Colorize commands when possible.
 alias \
@@ -56,7 +56,7 @@ alias \
 	xr="sudo xbps-remove -R" \
 	xq="xbps-query" \
 	z="zathura" \
-	n="nsxiv -b"
+	n="nsxiv -ab"
 
 alias \
 	lf="lfub" \
