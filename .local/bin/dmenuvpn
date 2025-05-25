@@ -1,0 +1,86 @@
+#!/bin/bash
+    #
+
+# Copyright (c) 2021 by Philip Collier, github.com/AB9IL
+# This script is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version. There is NO warranty; not even for
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+# Run this script as root user (use sudo)
+
+export wgpath="/etc/wireguard/"
+main(){
+IPTABLES_BACKUP="/tmp/iptables.backup"
+OPTION1="Connect"
+OPTION2="Disconnect"
+OPTION3="Switch Server"
+OPTION4="Import configs"
+OPTION5="Quit"
+
+OPTIONS="$OPTION1\n$OPTION2\n$OPTION3\n$OPTION4\n$OPTION5"
+
+SELECTED="$(echo -e "$OPTIONS" | dmenu -i -l 5 -p "Wireguard VPN")"
+
+connect(){
+    [[ -f "$IPTABLES_BACKUP" ]] || iptables-save | tee $IPTABLES_BACKUP
+    basename -s .conf $(ls $wgpath) | dmenu -i -p "Select to connect" | \
+    xargs -I {} wg-quick up "{}"
+    kill -38 "$(pidof "${STATUSBAR:-dwmblocks}")"
+}
+
+disconnect(){
+    wg 2>&1 | grep interface | awk '{print $2}' | sed 's/://g' | \
+        dmenu -i -p "Select to disconnect"| xargs -I {} wg-quick down "{}"
+    [[ -f "$IPTABLES_BACKUP" ]] && iptables-save | tee $IPTABLES_BACKUP
+    kill -38 "$(pidof "${STATUSBAR:-dwmblocks}")"
+}
+
+switch(){
+    # make selections
+    out_server="$(wg 2>&1 | grep interface | awk '{print $2}' | sed 's/://g' | \
+        dmenu -i -p "Select to disconnect")"
+    in_server="$(basename -s .conf $(ls $wgpath) | dmenu -i -p "Select to connect")"
+    # break then make connection
+    [[ "${out_server}" ]] && wg-quick down "${out_server}" || echo "No disconnection selected!"
+    [[ "${in_server}" ]] &&  wg-quick up "${in_server}" || echo "No new connection selected!"
+    [[ -f "$IPTABLES_BACKUP" ]] || iptables-save | tee $IPTABLES_BACKUP
+}
+
+import(){
+    fd -d 2 -t file -e conf . | \
+    dmenu -i -p "Select to copy" -multi-select -mesg "Shift + Enter to multi select" | \
+    xargs -I{} cp -f "{}" $wgpath
+    fd -t file -e conf . $wgpath -x chmod 644
+    main
+}
+
+case $SELECTED in
+  "$OPTION1")
+    # connect
+    connect
+    exit 0
+	;;
+  "$OPTION2")
+    # disconnect
+    disconnect
+    main
+    ;;
+  "$OPTION3")
+    # switch
+    switch
+    exit 0
+    ;;
+  "$OPTION4")
+    # copy conf files
+    import
+    ;;
+  "$OPTION5")
+    # exit the script
+    exit 0
+    ;;
+esac
+}
+
+main

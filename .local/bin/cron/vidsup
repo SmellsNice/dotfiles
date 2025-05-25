@@ -16,7 +16,7 @@ p() { printf "%s\n" "${@}"; }
 }
 
 mkdir -p "${dd}" && touch "${chl}"
-n() { notify-send -i "${XDG_CONFIG_HOME}/dunst/yt.png" -u "critical" "${1}"; }
+n() { notify-send "📺 ${1}"; }
 comd() {
         chn="${1}"
         df="${dd}/${chn}.tsv"

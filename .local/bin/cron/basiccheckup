@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# Syncs repositories and downloads updates, meant to be run as a cronjob.
-sudo pacman -Syyuw --noconfirm
-pkill -RTMIN+8 "${STATUSBAR:-dwmblocks}"

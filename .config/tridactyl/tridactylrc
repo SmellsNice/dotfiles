@@ -1,0 +1,59 @@
+" Scrolling
+bind j scrollpx 0 50
+bind k scrollpx 0 -50
+bind g scrollto 0
+
+" Search
+bind / fillcmdline find
+bind ? fillcmdline find -?
+bind n findnext 1
+bind N findnext -1
+bind ,<Space> nohlsearch
+
+" Input
+bind i focusinput -I
+bind İ hint -V
+bind ;İ hint -I
+bind ;gİ hint -qI
+bind y clipboard yank
+bind Y hint -y
+bind v js tri.excmds.shellescape(window.location.href).then(url => tri.excmds.exclaim_quiet('setsid -f mpv --no-terminal ' + url))
+bind V hint -W js -p tri.excmds.shellescape(JS_ARG).then(url => tri.excmds.exclaim_quiet('setsid -f mpv --no-terminal ' + url))
+
+" Zoom
+bind zz zoom 0.9
+
+" Search URLS
+unset searchurls
+setnull searchurls.google
+setnull searchurls.googlelucky
+setnull searchurls.googleuk
+setnull searchurls.startpage
+setnull searchurls.searx
+setnull searchurls.amazon
+setnull searchurls.amazonuk
+setnull searchurls.qwant
+setnull searchurls.wikipedia
+setnull searchurls.twitter
+setnull searchurls.yahoo
+setnull searchurls.osm
+setnull searchurls.github
+setnull searchurls.gentoo_wiki
+setnull searchurls.cnrtl
+setnull searchurls.mdn
+setnull searchurls.scholar
+setnull searchurls.bing
+setnull searchurls.duckduckgo
+setnull searchurls.youtube
+set searchurls.ddg https://duckduckgo.com/?q=
+set searchurls.wiki https://en.wikipedia.org/wiki/Special:Search?search=
+set searchurls.gh https://github.com/search?type=repositories&q=
+set searchurls.gl https://gitlab.com/search?repository_ref=master&search=
+set searchurls.cb https://codeberg.org/explore/repos?q=
+set searchurls.re https://old.reddit.com/r/
+set searchurls.res https://www.old.reddit.com/search?q=
+set searchurls.yt https://www.youtube.com/results?search_query=
+set searchurls.aur https://aur.archlinux.org/packages?O=0&K=
+set searchurls.pac https://archlinux.org/packages/?sort=&q=
+set searchurls.aw https://wiki.archlinux.org/?search=
+set searchengine ddg

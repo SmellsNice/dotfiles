@@ -6,10 +6,10 @@
 case $BLOCK_BUTTON in
         1) setsid "$TERMINAL" -e newsboat ;;
 	2) setsid -f newsup >/dev/null && exit ;;
-        3) notify-send "📰 News module" "\- Shows unread news items
-- Shows 🔃 if updating with \`newsup\`
-- Left click opens newsboat
-- Middle click syncs RSS feeds
+        3) notify-send "📰 News module" "\- Shows unread news items.
+- Shows 🔃 if updating with \`newsup\`.
+- Left click to open newsboat.
+- Middle click to sync RSS feeds.
 <b>Note:</b> Only one instance of newsboat (including updates) may be running at a time." ;;
 	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac

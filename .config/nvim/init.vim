@@ -66,9 +66,7 @@ hi Normal guibg=NONE ctermbg=NONE
 	endif
 	let g:airline_symbols.colnr = ' C:'
 	let g:airline_symbols.linenr = ' L:'
-"	let g:airline_symbols.maxlinenr = '☰ '
-	let g:airline_symbols.maxlinenr = '! '
-	let g:airline_symbols.whitespace = '! '
+	let g:airline_symbols.maxlinenr = '☰ '
 	let g:airline_theme='base16_gruvbox_dark_hard'
 
 " Shortcutting split navigation, saving a keypress:

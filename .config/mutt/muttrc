@@ -1,0 +1,16 @@
+# vim: filetype=neomuttrc
+source /usr/share/mutt-wizard/mutt-wizard.muttrc
+source /home/user/.config/mutt/accounts/user1@addr.com.muttrc
+set query_command = "abook -C ~/.config/abook/abookrc --datafile ~/.config/abook/addressbook --mutt-query '%s'"
+macro index,pager i1 '<sync-mailbox><enter-command>source /home/useuserr/.config/mutt/accounts/user1@addr.com.muttrc<enter><change-folder>!<enter>;<check-stats>' "switch to user1@addr.com"
+macro index,pager <F1> '<enter-command>set from="user1@addr.com" real_name="User1"<enter><enter-command>echo "Switched address to user1@addr.com"<enter>' "set identity to user1@addr.com"
+macro index,pager <F2> '<enter-command>set from="user2@addr.com" real_name="User2"<enter><enter-command>echo "Switched address to user2@addr.com"<enter>' "set identity to user2@addr.com"
+macro index,pager <F3> '<enter-command>set from="user3@addr.com" real_name="User3"<enter><enter-command>echo "Switched address to user3@addr.com"<enter>' "set identity to user3@addr.com"
+macro index,pager Ci <copy-message>=Inbox<enter>
+macro index,pager Mi <save-message>=Inbox<enter>
+macro index,pager gi <change-folder>=Inbox<enter>
+macro index,pager CS <copy-message>=Spam<enter>
+macro index,pager MS <save-message>=Spam<enter>
+macro index,pager gS <change-folder>=Spam<enter>
+macro index,pager a "<enter-command>set my_pipe_decode=\$pipe_decode pipe_decode<return><pipe-message>abook -C ~/.config/abook/abookrc --datafile ~/.config/abook/addressbook --add-email<return><enter-command>set pipe_decode=\$my_pipe_decode; unset my_pipe_decode<return>" "add the sender address to abook"
+color indicator		brightblack brightwhite          # currently highlighted message Surface 2=Background Text=Foreground

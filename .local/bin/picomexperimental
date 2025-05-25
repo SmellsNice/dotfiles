@@ -1,0 +1,4 @@
+#!/bin/sh
+# Run with xprofiles to enable experimental backends at launch
+
+picom --experimental-backends --no-vsync --backend glx --glx-no-stencil --glx-no-rebind-pixmap

@@ -1,3 +1,0 @@
-#!/bin/sh
-sudo -A wg-quick up wgcf-profile || sudo -A wg-quick down wgcf-profile
-pkill -RTMIN+5 "${STATUSBAR:-dwmblocks}"

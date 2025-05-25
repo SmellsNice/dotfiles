@@ -15,4 +15,5 @@ else
 fi
 # Activate dbus variables
 dbus-update-activation-environment --all
+~/.config/save-dbus-env.sh # Do */10 * * * * . $HOME/.dbus_session_env; . $HOME/.zprofile;  mailup for example for cronjobs, in case the dbus address doesnt match
 dbus-launch ssh-agent dwm

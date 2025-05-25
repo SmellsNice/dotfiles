@@ -30,12 +30,12 @@ set autoquit true
 cmd open ${{
     case $(file --mime-type "$(readlink -f $f)" -b) in
 	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
-	image/vnd.djvu|application/pdf|application/postscript|application/cbz) setsid -f zathura $fx >/dev/null 2>&1 ;;
+	image/vnd.djvu|application/pdf|application/postscript|application/cbz|application/cbr) setsid -f zathura $fx >/dev/null 2>&1 ;;
         text/*|application/json|inode/x-empty|application/x-subrip) $EDITOR $fx;;
 	image/x-xcf) setsid -f gimp $f >/dev/null 2>&1 ;;
 	image/svg+xml) display -- $f ;;
 	image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|avif\|tif\|ico\)\(_large\)*$" |
-		setsid -f nsxiv -abio 2>/dev/null | while read -r file; do
+		setsid -f nsxiv -bio 2>/dev/null | while read -r file; do
 			[ -z "$file" ] && continue
 			lf -remote "send select \"$file\""
 			lf -remote "send toggle"
@@ -77,6 +77,8 @@ cmd extract ${{
 			*.tbz2)      tar xjf $fx     ;;
 			*.tgz)       tar xzf $fx     ;;
 			*.zip)       unzip $fx       ;;
+			*.cbz)       unzip $fx       ;;
+			*.cbr)       unzip $fx       ;;
 			*.Z)         uncompress $fx  ;;
 			*.7z)        7z x $fx        ;;
 			*.tar.xz)    tar xf $fx      ;;
@@ -94,37 +96,47 @@ cmd delete ${{
 }}
 
 cmd moveto ${{
-	set -f
-	dest=$(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" | fzf --prompt 'Move to where? ' | sed 's|~|$HOME|')
-	[ -z "$dest" ] && exit
-	destpath=$(eval printf '%s' \"$dest\")
-	clear; tput cup $(($(tput lines)/3)); tput bold
-	echo "From:"
-	echo "$fx" | sed 's/^/   /'
-	printf "To:\n   %s\n\n\tmove?[y/N]" "$destpath"
-	read -r ans
-	[ "$ans" != "y" ] && exit
-	for x in $fx; do
-		mv -iv "$x" "$destpath"
-	done &&
-	notify-send "🚚 File(s) moved." "File(s) moved to $destpath."
+    set -f
+    clear; tput cup $(($(tput lines)/3))
+    tmp="$(mktemp)" && trap 'rm "$tmp"' EXIT || exit
+    sed 's/\s*#.*//; /^$/d' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" > "$tmp"
+    choice=$(cat "$tmp" | fzf --prompt 'Move to where? ' \
+        --bind result:transform:"grep -q '^{q}\s' \"$tmp\" && [ \$(grep '^{q}\S*\s' \"$tmp\" | wc -l) -eq 1 ] && echo accept" | \
+        sed 's/\S\+\s\+//')
+    [ -z "$choice" ] && exit
+    destpath=$(eval printf '%s' \"$choice\")
+    clear; tput cup $(($(tput lines)/3)); tput bold
+    echo "From:"
+    echo "$fx" | sed 's/^/   /'
+    printf "To:\n   %s\n\n\tmove?[y/N]" "$destpath"
+    read -r ans
+    [ "$ans" != "y" ] && exit
+    for x in $fx; do
+        mv -iv "$x" "$destpath"
+    done &&
+    notify-send "🚚 File(s) moved." "File(s) moved to $destpath."
 }}
 
 cmd copyto ${{
-	set -f
-	dest=$(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" | fzf --prompt 'Copy to where? ' | sed 's|~|$HOME|')
-	[ -z "$dest" ] && exit
-	destpath=$(eval printf '%s' \"$dest\")
-	clear; tput cup $(($(tput lines)/3)); tput bold
-	echo "From:"
-	echo "$fx" | sed 's/^/   /'
-	printf "To:\n   %s\n\n\tcopy?[y/N]" "$destpath"
-	read -r ans
-	[ "$ans" != "y" ] && exit
-	for x in $fx; do
-		cp -ivr "$x" "$destpath"
-	done &&
-	notify-send "📋 File(s) copied." "File(s) copied to $destpath."
+    set -f
+    clear; tput cup $(($(tput lines)/3))
+    tmp="$(mktemp)" && trap 'rm "$tmp"' EXIT || exit
+    sed 's/\s*#.*//; /^$/d' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" > "$tmp"
+    choice=$(cat "$tmp" | fzf --prompt 'Copy to where? ' \
+        --bind result:transform:"grep -q '^{q}\s' \"$tmp\" && [ \$(grep '^{q}\S*\s' \"$tmp\" | wc -l) -eq 1 ] && echo accept" | \
+        sed 's/\S\+\s\+//')
+    [ -z "$choice" ] && exit
+    destpath=$(eval printf '%s' \"$choice\")
+    clear; tput cup $(($(tput lines)/3)); tput bold
+    echo "From:"
+    echo "$fx" | sed 's/^/   /'
+    printf "To:\n   %s\n\n\tcopy?[y/N]" "$destpath"
+    read -r ans
+    [ "$ans" != "y" ] && exit
+    for x in $fx; do
+        cp -ivr "$x" "$destpath"
+    done &&
+    notify-send "📋 File(s) copied." "File(s) copied to $destpath."
 }}
 
 cmd setbg "$1"
@@ -155,7 +167,7 @@ cmd shortcutjump ${{
 	clear; tput cup $(($(tput lines)/3))
 	tmp="$(mktemp)" && trap 'rm "$tmp"' EXIT || exit
 	sed 's/\s*#.*//; /^$/d' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" > "$tmp"
-	choice=$(cat "$tmp" | fzf --layout=reverse --height 40% --listen --no-ignore-case --tiebreak=begin,chunk -n1 \
+	choice=$(cat "$tmp" | fzf --prompt 'Jump to where? ' \
 		 --bind result:transform:"grep -q '^{q}\s' \"$tmp\" && [ \$(grep '^{q}\S*\s' \"$tmp\" | wc -l) -eq 1 ] && echo accept" | \
 		 sed 's/\S\+\s\+//')
 	[ -z "$choice" ] && exit
@@ -163,9 +175,18 @@ cmd shortcutjump ${{
 	lf -remote "send $id cd $path"
 }}
 
+cmd findfile ${{
+	set +e        # Temporarily disable exit-on-error to handle fzf cancel smoothly
+	set -f        # Disable filename expansion (word splitting)
+	clear; tput cup $(($(tput lines)/3))
+	dest=$(fzf --prompt="Go to which file? ")
+	set -e        # Re-enable exit-on-error if your shellopts use it
+	[ -z "$dest" ] && exit  # Exit early if nothing selected or user pressed Esc
+	lf -remote "send $id select \"$dest\""
+}}
 
 # Bindings
-map <c-f> $lf -remote "send $id select \"$(fzf)\""
+map <c-f> findfile
 map J shortcutjump
 map H cd ~
 map g top
@@ -181,12 +202,14 @@ map <enter> shell
 map x $$f
 map X !$f
 map o &mimeopen "$f"
-map O $mimeopen --ask "$f"
-
+map O ${{
+	clear; tput cup $(($(tput lines)/3))
+	mimeopen --ask "$f"
+}}
 map A :rename; cmd-end # at the very end
 map c push A<c-u> # new rename
-map I :rename; cmd-home # at the very beginning
-map ı :rename # before extension
+map İ :rename; cmd-home # at the very beginning
+map i :rename # before extension
 map a :rename; cmd-right # after extension
 map B bulkrename
 map b $setbg $f
@@ -201,7 +224,7 @@ map U $printf "%s" "$fx" | xclip -selection clipboard
 map u $printf "%s" "$fx" | sed 's/.*\///' | xclip -selection clipboard
 map . $printf "%s" "$fx" | sed -E 's/^.+\[/https:\/\/www.youtube.com\/watch?v=/' | sed -E 's/\]\..+//' | xclip -selection clipboard
 map <gt> $printf "%s" "$fx" | sed -E 's/^.+\[/https:\/\/piped.video\/watch?v=/' | sed -E 's/\]\..+//' | xclip -selection clipboard
-map T $nsxiv -abt "$(pwd)" # opens thumbnail mode
+map T $nsxiv -bt "$(pwd)" # opens thumbnail mode
 map <c-l> unselect
 
 

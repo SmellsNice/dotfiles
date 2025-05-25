@@ -1,6 +1,6 @@
 #!/bin/sh
 dd="${XDG_CACHE_HOME}/ychannels"
-yd="${HOME}/Videos/Youtube Videos"
+yd="${HOME}"
 cl="${XDG_DATA_HOME}/categories"
 chl="${XDG_DATA_HOME}/channels"
 cld="${XDG_DATA_HOME}/clists"
@@ -13,7 +13,6 @@ d() {
         [ "${i}" ] || l="0"
         pr "${i}" | dmenu -i -l "${l}" -p "${1}"
 }
-n() { notify-send -i "${XDG_CONFIG_HOME}/dunst/yt.png" "${1}"; }
 sv() {
         df="${1}"
         so="${2}"
@@ -86,7 +85,7 @@ clvm() {
         ac="$(lva)"
         case "${ac}" in
                 "👀 WATCH") vp "${ac}" "${vt}" "${cn}" ;;
-                "📥 DOWNLOAD") vp "${ac}" "${vt}" "${cn}" && n "Download finished" ;;
+                "📥 DOWNLOAD") vp "${ac}" "${vt}" "${cn}" ;;
                 "🗑️ DELETE") sed -i "/${vt}/d" "${cld}/${ln}" ;;
                 *) return ;;
         esac
@@ -99,10 +98,7 @@ vp() {
         case "${ac}" in
                 "👀 WATCH") mpv "${vu}" ;;
                 "📥 DOWNLOAD")
-                        cdd="${yd}/${cn}"
-                        mkdir -p "${cdd}"
-                        yt-dlp -o "${cdd}/%(title)s.%(ext)s" "${vu}"
-                        n "Download finished"
+    			qndl "${vu}"
                         ;;
         esac
 }
@@ -161,7 +157,7 @@ vam() {
                 ac="$(ma)"
                 case "${ac}" in
                         "👀 WATCH") vp "${ac}" "${vt}" "${cn}" ;;
-                        "📥 DOWNLOAD") vp "${ac}" "${vt}" "${cn}" && n "Download finished" ;;
+                        "📥 DOWNLOAD") vp "${ac}" "${vt}" "${cn}" ;;
                         "➡️ SEND TO A LIST")
                                 ln="$(find "${cld}" -mindepth "1" -exec basename {} \; | d "Lists")"
                                 [ "${ln}" ] && atl "${vt}" "${cn}" "${ln}" && n "${vt} > list: ${ln}"

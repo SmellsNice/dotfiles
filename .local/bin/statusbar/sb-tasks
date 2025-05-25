@@ -10,9 +10,11 @@ num=$(tsp -l | awk -v numr=0 -v numq=0 '{if (/running/)numr++; if (/queued/)numq
 
 # Handle mouse clicks
 case $BLOCK_BUTTON in
-	1) setsid -f "$TERMINAL" -e tsp -l ;;
+	1) setsid -f "$TERMINAL" -e sh -c 'tsp -l; printf "\nPress <Enter> to exit window.\n\n"; read -r _' ;;
+	2) setsid -f "$TERMINAL" -e sh -c 'tsp -c; printf "\nPress <Enter> to exit window.\n\n"; read -r _' ;;
 	3) notify-send "Tasks module" "🤖: number of running/queued background tasks
-- Left click opens tsp" ;; # Right click
+- Left click to open tsp.
+- Middle click to show current running task." ;; # Right click
 	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 

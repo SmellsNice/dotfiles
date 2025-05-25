@@ -4,7 +4,7 @@ cf  ${XDG_CONFIG_HOME:-$HOME/.config}
 dd  ${XDG_DOWNLOAD_DIR:-$HOME/Downloads}
 dc  ${XDG_DOCUMENTS_DIR:-$HOME/Documents}
 dt  ${XDG_DATA_HOME:-$HOME/.local/share}
-rr  $HOME/.local/src
+r  $HOME/.local/src
 h   $HOME
 mm  ${XDG_MUSIC_DIR:-$HOME/Media/Music}
 mn  /mnt
