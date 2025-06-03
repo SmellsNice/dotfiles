@@ -36,6 +36,7 @@ process_cbz() {
     find "${WORK_DIR}" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) | while read -r filepath; do
         relpath="${filepath#$WORK_DIR/}"
         newname="$(echo "$relpath" | tr '/' '_')"
+        # Move file to WORK_DIR root with new name
         if [[ "$filepath" != "${WORK_DIR}/${newname}" ]]; then
             mv "$filepath" "${WORK_DIR}/${newname}"
         fi
@@ -44,13 +45,14 @@ process_cbz() {
     # Remove now empty subdirectories
     find "${WORK_DIR}" -type d ! -path "${WORK_DIR}" -exec rm -rf {} +
 
-    echo -e "${ANSI_BRIGHT_BLACK}(Step 2/3)${ANSI_RESET} Rotating landscape images counter-clockwise..."
+    echo -e "${ANSI_BRIGHT_BLACK}(Step 2/3)${ANSI_RESET} Searching for spreads and rotating landscape images counter-clockwise..."
 
     for filepath in "${WORK_DIR}"/*; do
         img_w="$(identify -format '%w' "${filepath}" || echo 0)"
         img_h="$(identify -format '%h' "${filepath}" || echo 0)"
         if (( img_w > img_h )); then
             echo "${filepath}: ${img_w}x${img_h}px"
+	# Rotate 90 degrees counter-clockwise
             magick "$filepath" -rotate -90 "$filepath"
         fi
     done
