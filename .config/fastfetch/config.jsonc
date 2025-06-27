@@ -30,7 +30,6 @@
     "memory",
     "swap",
     "disk",
-    "localip",
     "poweradapter",
     "locale",
     "break",
