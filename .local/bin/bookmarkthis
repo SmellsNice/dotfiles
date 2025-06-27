@@ -3,7 +3,7 @@
 file="$HOME/.local/share/larbs/snippets"
 
 # Get the URL (first whitespace-separated token) from clipboard
-bookmark=$(xclip -o | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | awk '{print $1}')
+bookmark=$(xclip -o | awk '{print $1}')
 
 # Check if bookmark is empty or only spaces
 if [ -z "$bookmark" ]; then
