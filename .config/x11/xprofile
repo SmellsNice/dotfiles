@@ -8,8 +8,7 @@ xrandr --setprovideroutputsource modesetting NVIDIA-0					#Enable this for envyc
 xrandr --output HDMI-1-1 --mode 1920x1080 --rate 74.97 --set "Broadcast RGB" "Full"    #Enable this for envycontrol Nvidia setup
 #xrandr --output HDMI-1 --mode 1920x1080 --rate 74.97 --set "Broadcast RGB" "Full"
 setbg &			# set the background with the `setbg` script
-#xrdb ${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources & xrdbpid=$!	# Uncomment to use Xresources colors/settings on startup
-xrdb ${HOME}/.Xresources	# Uncomment to use Xresources colors/settings on startup
+xrdb ${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources & xrdbpid=$!	# Uncomment to use Xresources colors/settings on startup
 setxkbmap tr	# Sets the locale to TR, necessary for snippets to work
 
 autostart="mpd picomglx dunst unclutter pipewire clipmenud remapd"
