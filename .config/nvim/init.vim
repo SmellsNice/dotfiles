@@ -25,7 +25,6 @@ call plug#end()
 
 set title
 set bg=dark
-
 set mouse=a
 set nohlsearch
 set clipboard+=unnamedplus
