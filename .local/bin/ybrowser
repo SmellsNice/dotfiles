@@ -108,7 +108,7 @@ gav() {
         sv "${avf}" "${so}"
 }
 bac() {
-        while vt="$(gav | d "Videos | Sort: @@s{v,d}")"; do
+        while vt="$(gav | d "Videos")"; do
                 [ "${vt}" ] || break
                 [ "${vt}" = "@@sv" ] || [ "${vt}" = "@@sd" ] && {
                         vt=$(gav "${vt}" | d "Videos")

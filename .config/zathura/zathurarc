@@ -1,7 +1,7 @@
 #set sandbox none
-set font "monospace 10"
-set statusbar-h-padding 0
-set statusbar-v-padding 0
+set font "monospace 9"
+set statusbar-h-padding 6
+set statusbar-v-padding 3
 set page-padding 0
 set selection-clipboard clipboard
 set guioptions none
