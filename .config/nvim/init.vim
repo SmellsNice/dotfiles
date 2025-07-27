@@ -36,6 +36,7 @@ colorscheme gruvbox
 hi Normal guibg=NONE ctermbg=NONE
 
 " Some basics:
+	nnoremap İ I
 	nnoremap c "_c
 	filetype plugin on
 	syntax on
@@ -48,10 +49,10 @@ hi Normal guibg=NONE ctermbg=NONE
 " Perform dot commands over visual blocks:
 	vnoremap . :normal .<CR>
 " Goyo plugin makes text more readable when writing prose:
-	map <leader>f :Goyo \| set bg=light \| set linebreak<CR>
+	map <leader>f :Goyo \| set bg=dark \| hi Normal guibg=NONE ctermbg=NONE \| set linebreak<CR>
 " Spell-check set to <leader>o, 'o' for 'orthography':
 	map <leader>o :setlocal spell! spelllang=en_us<CR>
-" Splits open at the bottom and right, which is non-retarded, unlike vim defaults.
+" Splits open at the bottom and right, which is non-stupid, unlike vim defaults.
 	set splitbelow splitright
 
 " Nerd tree
