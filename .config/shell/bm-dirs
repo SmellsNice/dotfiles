@@ -1,16 +1,21 @@
 # You can add comments to these files with #
-bb  ${XDG_MUSIC_DIR:-$HOME/Media/Books}
+bb  $HOME/Media/Books
 ca  ${XDG_CACHE_HOME:-$HOME/.cache}
 cf  ${XDG_CONFIG_HOME:-$HOME/.config}
+cm  $HOME/Media/Comics
 dd  ${XDG_DOWNLOAD_DIR:-$HOME/Downloads}
 dc  ${XDG_DOCUMENTS_DIR:-$HOME/Documents}
 dt  ${XDG_DATA_HOME:-$HOME/.local/share}
-r  $HOME/.local/src
+r   $HOME/.local/src
 h   $HOME
-mg  ${XDG_MUSIC_DIR:-$HOME/Media/Mangas}
+mg  $HOME/Media/Mangas
 mm  ${XDG_MUSIC_DIR:-$HOME/Media/Music}
 mn  /mnt
+mv  $HOME/Media/Movies
 pp  ${XDG_PICTURES_DIR:-$HOME/Pictures}
 sc  $HOME/.local/bin
+sh  $HOME/Media/Shows
 sr  $HOME/.local/src
+ss  $HOME/Media/Soulseek
+tt  $HOME/Media/Torrents
 vv  ${XDG_VIDEOS_DIR:-$HOME/Videos}
