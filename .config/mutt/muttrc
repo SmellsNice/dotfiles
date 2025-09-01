@@ -13,4 +13,4 @@ macro index,pager CS <copy-message>=Spam<enter>
 macro index,pager MS <save-message>=Spam<enter>
 macro index,pager gS <change-folder>=Spam<enter>
 macro index,pager a "<enter-command>set my_pipe_decode=\$pipe_decode pipe_decode<return><pipe-message>abook -C ~/.config/abook/abookrc --datafile ~/.config/abook/addressbook --add-email<return><enter-command>set pipe_decode=\$my_pipe_decode; unset my_pipe_decode<return>" "add the sender address to abook"
-color indicator		default black          # currently highlighted message Surface 2=Background Text=Foreground
+color indicator	brightblack brightwhite
