@@ -57,3 +57,6 @@ set searchurls.aur https://aur.archlinux.org/packages?O=0&K=
 set searchurls.pac https://archlinux.org/packages/?sort=&q=
 set searchurls.aw https://wiki.archlinux.org/?search=
 set searchengine ddg
+
+" URL Redirects
+autocmd DocStart ^http(s?)://www.reddit.com js tri.excmds.urlmodify("-t", "www", "old")
