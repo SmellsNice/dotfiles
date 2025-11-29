@@ -1,4 +1,0 @@
-#!/bin/sh
-# Run with xprofiles to enable experimental backends at launch
-
-picom --backend glx
