@@ -21,7 +21,7 @@ bind v js tri.excmds.shellescape(window.location.href).then(url => tri.excmds.ex
 bind V hint -W js -p tri.excmds.shellescape(JS_ARG).then(url => tri.excmds.exclaim_quiet('setsid -f mpv --no-terminal ' + url))
 
 " Zoom
-bind zz zoom 0.9
+bind zz zoom 1.0
 
 " Search URLS
 unset searchurls

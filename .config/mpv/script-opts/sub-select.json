@@ -10,6 +10,11 @@
         "blacklist": [ "sign" ]
     },
     {
+        "alang": ["zh"],
+        "slang": "eng?",
+        "blacklist": [ "sign" ]
+    },
+    {
         "inherit": "^",
         "slang": "und"
     },
@@ -20,6 +25,10 @@
     },
     {
         "alang": "eng?",
+        "slang": "no"
+    },
+    {
+        "alang": "tr?",
         "slang": "no"
     },
     {
