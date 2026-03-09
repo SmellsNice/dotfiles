@@ -285,6 +285,9 @@
 #def_key "i"
 #  show_song_info
 #
+def_key "İ"
+  show_song_info
+
 #def_key "I"
 #  show_artist_info
 #
