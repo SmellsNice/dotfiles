@@ -36,7 +36,7 @@
   --tridactyl-hintspan-font-family: var(--tridactyl-font-family);
   --tridactyl-hintspan-font-size: var(--tridactyl-small-font-size);
   --tridactyl-hintspan-font-weight: bold;
-  --tridactyl-hintspan-fg: var(--gruvbox-black);
+  --tridactyl-hintspan-fg: var(--gruvbox-foreground);
   --tridactyl-hintspan-bg: var(--gruvbox-green);
   --tridactyl-hintspan-border-width: 0;
   --tridactyl-hintspan-js-background: var(--gruvbox-red);
