@@ -1,0 +1,209 @@
+/* Original theme by rasch on Github: https://github.com/rasch/tridactyl-theme */
+
+:root {
+  --gruvbox-background: #282828;
+  --gruvbox-foreground: #ebdbb2;
+  --gruvbox-current-line: #32302f;
+  --gruvbox-comment: #918274;
+  --gruvbox-black: #1d2021;
+  --gruvbox-red: #cc241d;
+  --gruvbox-orange: #d65d0e;
+  --gruvbox-yellow: #d79921;
+  --gruvbox-green: #98971a;
+  --gruvbox-purple: #b16286;
+  --gruvbox-cyan: #458588;
+  --gruvbox-pink: #d3869b;
+  --gruvbox-bright-cyan: #83a598;
+
+  /* Generic */
+  --tridactyl-font-family: monospace;
+  --tridactyl-font-family-sans: monospace;
+  --tridactyl-font-size: 16px;
+  --tridactyl-small-font-size: 12px;
+  --tridactyl-bg: var(--gruvbox-background);
+  --tridactyl-fg: var(--gruvbox-comment);
+  --tridactyl-scrollbar-color: auto;
+
+  /* Mode Indicator */
+  --tridactyl-status-font-family: var(--tridactyl-font-family);
+  --tridactyl-status-font-size: var(--tridactyl-small-font-size);
+  --tridactyl-status-bg: var(--gruvbox-background);;
+  --tridactyl-status-fg: var(--gruvbox-foreground);
+  --tridactyl-status-border: 0;
+  --tridactyl-status-border-radius: 6px;
+
+  /* Hint Character Tags */
+  --tridactyl-hintspan-font-family: var(--tridactyl-font-family);
+  --tridactyl-hintspan-font-size: var(--tridactyl-small-font-size);
+  --tridactyl-hintspan-font-weight: bold;
+  --tridactyl-hintspan-fg: var(--gruvbox-black);
+  --tridactyl-hintspan-bg: var(--gruvbox-green);
+  --tridactyl-hintspan-border-width: 0;
+  --tridactyl-hintspan-js-background: var(--gruvbox-red);
+
+  /* Hint Element Highlights */
+  --tridactyl-hint-bg: none;
+  --tridactyl-hint-outline: 0;
+  --tridactyl-hint-active-fg: none;
+  --tridactyl-hint-active-bg: none;
+  --tridactyl-hint-active-outline: 0;
+
+  /* :viewsource */
+  --tridactyl-vs-bg: var(--gruvbox-background);
+  --tridactyl-vs-fg: var(--gruvbox-comment);
+  --tridactyl-vs-font-family: var(--tridactyl-font-family);
+
+  /* Commandline */
+  --tridactyl-cmdl-bg: var(--gruvbox-background);
+  --tridactyl-cmdl-fg: var(--gruvbox-foreground);
+  --tridactyl-cmdl-line-height: 1.6;
+  --tridactyl-cmdl-font-family: monospace;
+  --tridactyl-cmdl-font-size: var(--tridactyl-small-font-size);
+
+  /* Completions */
+  --tridactyl-cmplt-option-height: 1.4em;
+  --tridactyl-cmplt-fg: var(--gruvbox-comment);
+  --tridactyl-cmplt-bg: var(--gruvbox-background);
+  --tridactyl-cmplt-font-size: var(--tridactyl-small-font-size);
+  --tridactyl-cmplt-font-family: monospace;
+  --tridactyl-cmplt-border-top: 0;
+
+  /* Header */
+  --tridactyl-header-first-bg: var(--gruvbox-black);
+  --tridactyl-header-second-bg: var(--gruvbox-black);
+  --tridactyl-header-third-bg: var(--gruvbox-black);
+  --tridactyl-header-font-size: inherit;
+  --tridactyl-header-font-weight: normal;
+  --tridactyl-header-border-bottom: 0;
+
+  /* URL Style */
+  --tridactyl-url-text-decoration: none;
+  --tridactyl-url-fg: var(--gruvbox-green);
+  --tridactyl-url-bg: none;
+  --tridactyl-url-cursor: pointer;
+
+  /* Handle the selected URL's color */
+  --tridactyl-photon-colours-accent-1: var(--gruvbox-green);
+
+  /* Option Focused */
+  --tridactyl-of-fg: var(--gruvbox-foreground);
+  --tridactyl-of-bg: var(--gruvbox-current-line);
+
+  /* New Tab Page Spoiler Box (Changelog) */
+  --tridactyl-highlight-box-bg: var(--gruvbox-black);
+  --tridactyl-highlight-box-fg: var(--gruvbox-comment);
+  --tridactyl-photon-colours-in-content-box-border-color: var(--gruvbox-black) !important;
+
+  /* Private Window Icon */
+  --tridactyl-private-window-icon-url: url("chrome://browser/skin/privateBrowsing.svg");
+
+  /* Container Icons */
+  --tridactyl-container-fingerprint-url: url("resource://usercontext-content/fingerprint.svg");
+  --tridactyl-container-briefcase-url: url("resource://usercontext-content/briefcase.svg");
+  --tridactyl-container-dollar-url: url("resource://usercontext-content/dollar.svg");
+  --tridactyl-container-cart-url: url("resource://usercontext-content/cart.svg");
+  --tridactyl-container-circle-url: url("resource://usercontext-content/circle.svg");
+  --tridactyl-container-gift-url: url("resource://usercontext-content/gift.svg");
+  --tridactyl-container-vacation-url: url("resource://usercontext-content/vacation.svg");
+  --tridactyl-container-food-url: url("resource://usercontext-content/food.svg");
+  --tridactyl-container-fruit-url: url("resource://usercontext-content/fruit.svg");
+  --tridactyl-container-pet-url: url("resource://usercontext-content/pet.svg");
+  --tridactyl-container-tree-url: url("resource://usercontext-content/tree.svg");
+  --tridactyl-container-chill-url: url("resource://usercontext-content/chill.svg");
+
+  /* Container Colors */
+  --tridactyl-container-color-blue: var(--gruvbox-cyan);
+  --tridactyl-container-color-turquoise: var(--gruvbox-bright-cyan);
+  --tridactyl-container-color-green: var(--gruvbox-green);
+  --tridactyl-container-color-yellow: var(--gruvbox-yellow);
+  --tridactyl-container-color-orange: var(--gruvbox-orange);
+  --tridactyl-container-color-red: var(--gruvbox-red);
+  --tridactyl-container-color-pink: var(--gruvbox-pink);
+  --tridactyl-container-color-purple: var(--gruvbox-purple);
+}
+
+/*
+# Private Windows
+
+Mode Indicator: This has a white background by default, which didn't work so
+well with the Gruvbox foreground color (#f8f8f2).
+
+Icon Color: The default black SVG icon color doesn't contrast enough with the
+Gruvbox background color.
+*/
+
+.TridactylPrivate {
+  background: none !important;
+}
+
+.TridactylOwnNamespace .option.incognito .privatewindow {
+  fill: var(--gruvbox-comment) !important;
+}
+
+/*
+# Tridactyl New Tab Page
+
+-> I'm not sure why the original author was so determined about this but I have no reason to remove this so it remains.
+
+Remove the red and green backgrounds from the changelog button/toggle.
+
+> According to ScreenRant, Craven landed on the color scheme after reading in a
+> scientific article that humans have an especially hard time processing the
+> colors red and green together. As Live Science explains, red light causes
+> retinal cells called opponent neurons to fire—thus alerting our brain that
+> we’re seeing red—while green light doesn’t cause them to do anything (a lack
+> of motion that our brain knows to perceive as green). Since these actions
+> cancel each other out, seeing certain shades of red and green simultaneously
+> can be a little optically confusing (Gutoskey).
+
+---
+Gutoskey, Ellen. “The Smart—and Scientific—Reason Freddy Krueger’s
+  Sweater Is Red and Green-Striped.” Mental Floss, 27 October 2020,
+  https://www.mentalfloss.com/article/633068/why-freddy-krueger-wears-red-and-green.
+*/
+
+#trinewtab #nagbar-changelog {
+  background: var(--gruvbox-current-line) !important;
+  color: var(--gruvbox-pink) !important;
+}
+
+#trinewtab input[id^="spoiler"] + label {
+  background: var(--gruvbox-comment) !important;
+  color: var(--gruvbox-foreground) !important;
+}
+
+/*
+# Tridactyl Help Page
+
+Use the Gruvbox color theme on the `:help` page.
+*/
+
+.TridactylOwnNamespace .tsd-flag {
+  background-color: var(--gruvbox-current-line) !important;
+  color: var(--gruvbox-foreground) !important;
+}
+
+.TridactylOwnNamespace .tsd-panel,
+.TridactylOwnNamespace .tsd-signature,
+.TridactylOwnNamespace .tsd-index-panel h3 {
+  border-width: 1px !important;
+  border-color: var(--gruvbox-current-line) !important;
+}
+
+.TridactylOwnNamespace .tsd-signature-symbol,
+.TridactylOwnNamespace .tsd-sources {
+  color: var(--gruvbox-current-line) !important;
+}
+
+.TridactylOwnNamespace .hljs-keyword {
+  color: var(--gruvbox-purple) !important;
+}
+
+.TridactylOwnNamespace .hljs-string {
+  color: var(--gruvbox-yellow) !important;
+}
+
+.TridactylOwnNamespace .hljs-title,
+.TridactylOwnNamespace .hljs-comment {
+  color: var(--gruvbox-foreground) !important;
+}

@@ -60,3 +60,6 @@ set searchengine ddg
 
 " URL Redirects
 autocmd DocStart ^http(s?)://www.reddit.com js tri.excmds.urlmodify("-t", "www", "old")
+
+" Colorscheme
+colorscheme gruvbox
