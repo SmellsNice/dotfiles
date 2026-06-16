@@ -32,7 +32,7 @@ cmd open ${{
     case $(mimetype --brief "$(readlink -f $f)") in
 	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
 	image/vnd.djvu|application/vnd.djvu|application/pdf|application/postscript|application/vnd.comicbook+zip|application/vnd.comicbook-rar|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
-        text/*|application/json|inode/x-empty|application/x-subrip) $EDITOR $fx;;
+        text/*|application/json|inode/x-empty|application/x-subrip|application/x-shellscript) $EDITOR $fx;;
 	image/x-xcf) setsid -f gimp $fx >/dev/null 2>&1 ;;
 	image/svg+xml) display -- $fx ;;
 	image/*) rotdir $fx | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|avif\|tif\|ico\)\(_large\)*$" |
