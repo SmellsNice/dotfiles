@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-trap 'echo; echo "Interrupted."; exit 130' INT TERM
+trap 'echo; echo "Interrupted."; rm -f "$out"; exit 130' INT TERM
 
 shopt -s nullglob
 
@@ -61,6 +61,8 @@ fi
 
 for f in "${files[@]}"; do
   [[ -f "$f" ]] || continue
+
+  out="${f%.*}_temp.${f##*.}"
 
   echo "File: $(basename "$f")"
 
@@ -133,7 +135,7 @@ for f in "${files[@]}"; do
         IFS=',' read -r sid _ <<< "${sstreams[0]}"
       elif [[ ${#sstreams[@]} -gt 0 ]]; then
         echo
-        read -p "Select subtitle index (blank for none): " sid
+        read -p "Select subtitle index: " sid
       fi
       LAST_SID="$sid"
     fi
@@ -150,7 +152,6 @@ for f in "${files[@]}"; do
     done
   fi
 
-  out="${f%.*}_temp.${f##*.}"
 
   echo
   echo "Encoding: $out"
@@ -158,11 +159,28 @@ for f in "${files[@]}"; do
 
   cmd=(
     ffmpeg -hide_banner -loglevel error -stats -i "$f" \
-    -map 0:$vid \
     -map 0:$aid \
   )
-  if [[ ${#sstreams[@]} -gt 0 ]]; then
-    cmd+=(-vf "subtitles='$f':si=$sid_local")
+  if [[ -n "$sid" ]]; then
+    IFS=',' read -r _ scodec _ <<< "${sstreams[$sid_local]}"
+    if [[ "$scodec" =~ ^(dvd_subtitle|hdmv_pgs_subtitle|dvb_subtitle)$ ]]; then
+      echo "Image based subtitles detected, proceeding."
+      echo
+      cmd+=(
+	-filter_complex "[0:$vid][0:$sid]overlay"
+      )
+    else
+      echo "Text based subtitles detected, proceeding."
+      echo
+      cmd+=(
+	-vf "subtitles='$f':si=$sid_local"
+        -map 0:$vid
+      )
+    fi
+  else
+    cmd+=(
+      -map 0:$vid
+    )
   fi
   cmd+=(
     -c:v libx264 -preset veryfast -crf 18
