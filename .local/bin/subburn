@@ -164,7 +164,7 @@ for f in "${files[@]}"; do
   fi
   cmd+=(
     -c:v libx264 -preset veryfast -crf 18
-    -c:a aac -b:a 192k
+    -c:a copy
     -sn "$out"
   )
 
