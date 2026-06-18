@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+trap 'echo; echo "Interrupted."; exit 130' INT TERM
+
 shopt -s nullglob
 
 INPUT=""
