@@ -1,0 +1,183 @@
+#!/usr/bin/env bash
+
+shopt -s nullglob
+
+INPUT=""
+REUSE_INDEX=1
+
+# Flag handling
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --help|-h)
+      echo "Usage: subburn [options] <file|folder>"
+      echo
+      echo "Options:"
+      echo "  -r, --dont-reuse-index   Asks for stream indexes for every file in the input folder."
+      echo "  -h, --help               Shows this help screen."
+      exit 0
+      ;;
+
+    --dont-reuse-index|-r)
+      REUSE_INDEX=0
+      shift
+      ;;
+    *)
+
+      # First non-flag = input
+      if [[ -z "$INPUT" ]]; then
+        INPUT="$1"
+      else
+        echo "Unknown extra argument: $1"
+        exit 1
+      fi
+      shift
+      ;;
+  esac
+done
+
+if [[ -z "$INPUT" ]]; then
+  echo "Error: no input provided."
+  echo
+  echo "Usage: subburn [options] <file|folder>"
+  echo
+  echo "Options:"
+  echo "  -r, --dont-reuse-index   Asks for stream indexes for every file in the input folder."
+  echo "  -h, --help               Shows this help screen."
+  exit 1
+fi
+
+LAST_VID=""
+LAST_AID=""
+LAST_SID=""
+
+# File handling
+if [[ -d "$INPUT" ]]; then
+  files=("$INPUT"/*)
+else
+  files=("$INPUT")
+fi
+
+for f in "${files[@]}"; do
+  [[ -f "$f" ]] || continue
+
+  echo "File: $(basename "$f")"
+
+  # Index list
+  mapfile -t vstreams < <(ffprobe -v error -select_streams v \
+    -show_entries stream=index,codec_name,width,height:stream_tags=title -of csv=p=0 "$f")
+
+  mapfile -t astreams < <(ffprobe -v error -select_streams a \
+    -show_entries stream=index,codec_name,channels:stream_tags=language,title -of csv=p=0 "$f")
+
+  mapfile -t sstreams < <(ffprobe -v error -select_streams s \
+    -show_entries stream=index,codec_name:stream_tags=language,title -of csv=p=0 "$f")
+
+  echo
+  echo "Video indexes:"
+  for i in "${vstreams[@]}"; do
+    IFS=',' read -r idx codec w h title <<< "$i"
+    echo "  $idx | $codec | ${w}x${h} | ${title:-no-title}"
+  done
+
+  echo
+  echo "Audio indexes:"
+  for i in "${astreams[@]}"; do
+    IFS=',' read -r idx codec ch lang title <<< "$i"
+    echo "  $idx | $codec | ${ch}ch | ${lang:-unk} | ${title:-no-title}"
+  done
+
+  if [[ ${#sstreams[@]} -gt 0 ]]; then
+    echo
+    echo "Subtitle indexes:"
+    for i in "${sstreams[@]}"; do
+      IFS=',' read -r idx codec lang title <<< "$i"
+      echo "  $idx | $codec | ${lang:-unk} | ${title:-no-title}"
+    done
+  fi
+
+  # Video selection
+  if [[ "$REUSE_INDEX" -eq 1 && -n "$LAST_VID" ]]; then
+    vid="$LAST_VID"
+  else
+    if [[ ${#vstreams[@]} -eq 1 ]]; then
+      IFS=',' read -r vid _ <<< "${vstreams[0]}"
+    else
+      echo
+      read -p "Select video index: " vid
+    fi
+    LAST_VID="$vid"
+  fi
+
+  # Audio selection
+  if [[ "$REUSE_INDEX" -eq 1 && -n "$LAST_AID" ]]; then
+    aid="$LAST_AID"
+  else
+    if [[ ${#astreams[@]} -eq 1 ]]; then
+      IFS=',' read -r aid _ <<< "${astreams[0]}"
+    else
+      echo
+      read -p "Select audio index: " aid
+    fi
+    LAST_AID="$aid"
+  fi
+
+  # Subtitle selection
+  if [[ ${#sstreams[@]} -gt 0 ]]; then
+    if [[ "$REUSE_INDEX" -eq 1 && -n "$LAST_SID" ]]; then
+      sid="$LAST_SID"
+    else
+      sid=""
+      if [[ ${#sstreams[@]} -eq 1 ]]; then
+        IFS=',' read -r sid _ <<< "${sstreams[0]}"
+      elif [[ ${#sstreams[@]} -gt 0 ]]; then
+        echo
+        read -p "Select subtitle index (blank for none): " sid
+      fi
+      LAST_SID="$sid"
+    fi
+  fi
+  # Convert global index to subtitle index
+  if [[ ${#sstreams[@]} -gt 0 ]]; then
+    sid_local=-1
+    for i in "${!sstreams[@]}"; do
+      IFS=',' read -r idx _ <<< "${sstreams[$i]}"
+      if [[ "$idx" -eq "$sid" ]]; then
+        sid_local="$i"
+        break
+      fi
+    done
+  fi
+
+  out="${f%.*}_temp.${f##*.}"
+
+  echo
+  echo "Encoding: $out"
+  echo
+
+  cmd=(
+    ffmpeg -hide_banner -loglevel error -stats -i "$f" \
+    -map 0:$vid \
+    -map 0:$aid \
+  )
+  if [[ ${#sstreams[@]} -gt 0 ]]; then
+    cmd+=(-vf "subtitles='$f':si=$sid_local")
+  fi
+  cmd+=(
+    -c:v libx264 -preset veryfast -crf 18
+    -c:a aac -b:a 192k
+    -sn "$out"
+  )
+
+  "${cmd[@]}"
+
+  if [[ $? -eq 0 ]]; then
+    mv -f "$out" "$f"
+  else
+    echo "Encoding failed, keeping original file: $f"
+    rm -f "$out"
+  fi
+
+  echo
+
+done
+echo "All files encoded."
