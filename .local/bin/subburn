@@ -131,12 +131,13 @@ for f in "${files[@]}"; do
       sid="$LAST_SID"
     else
       sid=""
-      if [[ ${#sstreams[@]} -eq 1 ]]; then
-        IFS=',' read -r sid _ <<< "${sstreams[0]}"
-      elif [[ ${#sstreams[@]} -gt 0 ]]; then
+#      Commenting out automatic subtitle selection so I can get rid of extra audio tracks etc, comment back in as needed.
+#      if [[ ${#sstreams[@]} -eq 1 ]]; then
+#        IFS=',' read -r sid _ <<< "${sstreams[0]}"
+#      elif [[ ${#sstreams[@]} -gt 0 ]]; then
         echo
-        read -p "Select subtitle index: " sid
-      fi
+	read -p "Select subtitle index (blank for none): " sid
+#      fi
       LAST_SID="$sid"
     fi
   fi
