@@ -24,6 +24,8 @@ alias \
 	mv="mv -iv" \
 	rm="rm -vI" \
 	bc="bc -ql" \
+	df="df -h" \
+	du="du -h" \
 	rsync="rsync -vrPlu" \
 	mkd="mkdir -pv" \
 	yt="yt-dlp --embed-metadata -i" \
