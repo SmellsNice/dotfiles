@@ -6,6 +6,7 @@ shopt -s nullglob
 
 INPUT=""
 REUSE_INDEX=1
+INDEX_EXIST=0
 
 # Flag handling
 while [[ $# -gt 0 ]]; do
@@ -21,6 +22,8 @@ while [[ $# -gt 0 ]]; do
 
     --dont-reuse-index|-r)
       REUSE_INDEX=0
+      echo "Index reusing disabled, will ask for indexes every time."
+      echo
       shift
       ;;
     *)
@@ -100,7 +103,7 @@ for f in "${files[@]}"; do
   fi
 
   # Video selection
-  if [[ "$REUSE_INDEX" -eq 1 && -n "$LAST_VID" ]]; then
+  if [[ "$REUSE_INDEX" -eq 1 && "$INDEX_EXIST" -eq 1 && -n "$LAST_VID" ]]; then
     vid="$LAST_VID"
   else
     if [[ ${#vstreams[@]} -eq 1 ]]; then
@@ -113,7 +116,7 @@ for f in "${files[@]}"; do
   fi
 
   # Audio selection
-  if [[ "$REUSE_INDEX" -eq 1 && -n "$LAST_AID" ]]; then
+  if [[ "$REUSE_INDEX" -eq 1 && "$INDEX_EXIST" -eq 1 && -n "$LAST_AID" ]]; then
     aid="$LAST_AID"
   else
     if [[ ${#astreams[@]} -eq 1 ]]; then
@@ -127,7 +130,7 @@ for f in "${files[@]}"; do
 
   # Subtitle selection
   if [[ ${#sstreams[@]} -gt 0 ]]; then
-    if [[ "$REUSE_INDEX" -eq 1 && -n "$LAST_SID" ]]; then
+    if [[ "$REUSE_INDEX" -eq 1 && "$INDEX_EXIST" -eq 1 ]]; then
       sid="$LAST_SID"
     else
       sid=""
@@ -142,7 +145,7 @@ for f in "${files[@]}"; do
     fi
   fi
   # Convert global index to subtitle index
-  if [[ ${#sstreams[@]} -gt 0 ]]; then
+  if [[ -n "$sid" ]]; then
     sid_local=-1
     for i in "${!sstreams[@]}"; do
       IFS=',' read -r idx _ <<< "${sstreams[$i]}"
@@ -152,7 +155,6 @@ for f in "${files[@]}"; do
       fi
     done
   fi
-
 
   echo
   echo "Encoding: $out"
@@ -199,6 +201,8 @@ for f in "${files[@]}"; do
   fi
 
   echo
+
+  INDEX_EXIST=1
 
 done
 echo "All files encoded."
